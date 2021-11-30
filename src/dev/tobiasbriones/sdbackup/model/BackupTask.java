@@ -18,6 +18,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Defines a backup task item that provides the target source and list of
+ * destinations where the source is to be copied.
+ *
+ * @author Tobias Briones
+ */
 public final class BackupTask implements Serializable, Iterable<File> {
     private static final long serialVersionUID = 1L;
     private final List<File> destinations;

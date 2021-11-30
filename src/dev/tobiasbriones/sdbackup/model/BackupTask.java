@@ -25,6 +25,9 @@ import java.util.List;
  * @author Tobias Briones
  */
 public final class BackupTask implements Serializable, Iterable<File> {
+    private static final String SD_DIR_NAME = "Software Development";
+    private static final int INITIAL_CAPACITY = 3;
+    private static final char SEP_CHAR = '\\';
     private static final long serialVersionUID = 1L;
     private final List<File> destinations;
     private String name;
@@ -34,7 +37,7 @@ public final class BackupTask implements Serializable, Iterable<File> {
     private String sdType;
 
     public BackupTask() {
-        this.destinations = new ArrayList<>();
+        this.destinations = new ArrayList<>(INITIAL_CAPACITY);
         this.name = "";
         this.target = null;
         this.sdPath = null;
@@ -46,46 +49,18 @@ public final class BackupTask implements Serializable, Iterable<File> {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String value) {
+        this.name = value;
     }
 
     public File getTarget() {
         return target;
     }
 
-    public void setTarget(File target) {
-        this.target = target;
-        File parent = target;
-        boolean hasFound = false;
+    public void setTarget(File value) {
+        this.target = value;
 
-        while (!hasFound && (parent = parent.getParentFile()) != null) {
-            if (parent.getName().equals("Software Development")) {
-                hasFound = true;
-            }
-        }
-        if (hasFound) {
-            final String totalPath = target.getAbsolutePath();
-            final String rootPath = parent.getAbsolutePath();
-
-            sdPath = totalPath.substring(rootPath.length());
-
-            if (sdPath.charAt(0) == '\\') {
-                sdPath = sdPath.substring(1);
-            }
-            final String[] x = sdPath.split("\\\\");
-
-            try {
-                sdOwner = x[0];
-                sdType = x[1];
-                name = x[x.length - 1];
-            }
-            catch (IndexOutOfBoundsException ignore) {
-                sdPath = null;
-                sdOwner = null;
-                sdType = null;
-            }
-        }
+        updateSdPath();
     }
 
     public String getSdPath() {
@@ -121,5 +96,38 @@ public final class BackupTask implements Serializable, Iterable<File> {
         sdType = null;
 
         destinations.clear();
+    }
+
+    private void updateSdPath() {
+        File parent = target;
+        boolean hasFound = false;
+
+        while (!hasFound && (parent = parent.getParentFile()) != null) {
+            if (parent.getName().equals(SD_DIR_NAME)) {
+                hasFound = true;
+            }
+        }
+        if (hasFound) {
+            final String totalPath = target.getAbsolutePath();
+            final String rootPath = parent.getAbsolutePath();
+
+            sdPath = totalPath.substring(rootPath.length());
+
+            if (sdPath.charAt(0) == SEP_CHAR) {
+                sdPath = sdPath.substring(1);
+            }
+            final String[] x = sdPath.split("\\\\");
+
+            try {
+                sdOwner = x[0];
+                sdType = x[1];
+                name = x[x.length - 1];
+            }
+            catch (IndexOutOfBoundsException ignore) {
+                sdPath = null;
+                sdOwner = null;
+                sdType = null;
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ public final class FileUtils {
     }
 
     public static void copyDirectory(Path src, Path dst) throws IOException {
+        Files.createDirectories(dst);
         try (Stream<Path> walk = Files.walk(src)) {
             final List<Path> paths = walk.collect(Collectors.toList());
 

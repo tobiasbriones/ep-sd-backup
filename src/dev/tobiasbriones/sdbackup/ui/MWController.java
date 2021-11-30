@@ -17,14 +17,13 @@ import dev.tobiasbriones.sdbackup.model.BackupTask;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public final class MWController implements MainWindow.Controller {
@@ -88,6 +87,8 @@ public final class MWController implements MainWindow.Controller {
         }
         for (File destination : backupTask) {
             final File finalDestination = Paths.get(destination.getAbsolutePath(), sdPath, date).toFile();
+
+            requireNotExists(finalDestination.toPath());
             FileUtils.copyDirectory(originFolder, finalDestination);
         }
     }
@@ -127,6 +128,13 @@ public final class MWController implements MainWindow.Controller {
             catch (ClassNotFoundException e) {
                 throw new IOException("Class not found. " + e.getMessage());
             }
+        }
+    }
+
+    private static void requireNotExists(Path path) throws IOException {
+        if (Files.isDirectory(path)) {
+            final String msg = "Already exists: " + path;
+            throw new IOException(msg);
         }
     }
 

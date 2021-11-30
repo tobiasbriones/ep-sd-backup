@@ -19,6 +19,9 @@ import javax.swing.*;
 import java.io.*;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -73,8 +76,11 @@ public final class MWController implements MainWindow.Controller {
     @Override
     public void backup(BackupTask backupTask) throws IOException {
         final File originFolder = backupTask.getTarget();
-        final SimpleDateFormat sdf = new SimpleDateFormat("YYYY.MM.dd HH_mm");
-        final String date = sdf.format(new Date()).replace(':', '_').replace('/', '.');
+        final String pattern = "YYYY.MM.dd HH_mm";
+        final String date = LocalDateTime.now()
+                                         .format(DateTimeFormatter.ofPattern(pattern))
+                                         .replace(':', '_')
+                                         .replace('/', '.');
         final String sdPath = backupTask.isSdBackup() ? backupTask.getSdPath() : "";
 
         if (!(originFolder.exists() && originFolder.isDirectory())) {

@@ -12,11 +12,13 @@
 
 package com.github.tobiasbriones.sdbackup.ui;
 
+import com.github.tobiasbriones.sdbackup.FileUtils;
 import com.github.tobiasbriones.sdbackup.model.BackupTask;
-import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,7 +83,8 @@ public final class MWController implements MainWindow.Controller {
             throw new IOException("Target doesn't exist or is not a directory");
         }
         for (File destination : backupTask) {
-            FileUtils.copyDirectory(originFolder, Paths.get(destination.getAbsolutePath(), sdPath, date).toFile());
+            final File finalDestination = Paths.get(destination.getAbsolutePath(), sdPath, date).toFile();
+            FileUtils.copyDirectory(originFolder, finalDestination);
         }
     }
 

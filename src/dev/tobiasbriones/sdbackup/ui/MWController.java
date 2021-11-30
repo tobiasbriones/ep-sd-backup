@@ -31,7 +31,7 @@ public final class MWController implements MainWindow.Controller {
     private final List<BackupTask> backupTasks;
 
     public MWController() {
-        this.backupTasks = new ArrayList<>();
+        this.backupTasks = new ArrayList<>(5);
 
         init();
     }

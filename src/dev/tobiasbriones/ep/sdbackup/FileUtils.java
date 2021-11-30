@@ -10,7 +10,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package dev.tobiasbriones.sdbackup;
+package dev.tobiasbriones.ep.sdbackup;
 
 import java.io.File;
 import java.io.IOException;

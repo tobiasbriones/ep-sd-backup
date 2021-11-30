@@ -13,4 +13,4 @@
 /**
  * @author Tobias Briones
  */
-package dev.tobiasbriones.sdbackup.ui;
+package dev.tobiasbriones.ep.sdbackup.model;

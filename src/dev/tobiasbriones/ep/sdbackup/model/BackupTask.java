@@ -10,7 +10,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package dev.tobiasbriones.sdbackup.model;
+package dev.tobiasbriones.ep.sdbackup.model;
 
 import java.io.File;
 import java.io.Serializable;

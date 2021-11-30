@@ -28,4 +28,6 @@ public final class Main {
         catch (Exception ignored) {}
         SwingUtilities.invokeLater(() -> new MainWindow(new MWController()));
     }
+
+    private Main() {}
 }

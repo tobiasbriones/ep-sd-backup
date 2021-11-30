@@ -41,6 +41,10 @@ public final class FileUtils {
         final String srcStr = src.toString();
         final String relDst = srcStr.substring(rootSrc.toString().length());
         final Path dst = Paths.get(rootDst.toString(), relDst);
+
+        if (Files.isDirectory(dst)) {
+            return;
+        }
         Files.copy(src, dst);
     }
 

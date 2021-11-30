@@ -10,10 +10,10 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package com.github.tobiasbriones.sdbackup;
+package dev.tobiasbriones.sdbackup;
 
-import com.github.tobiasbriones.sdbackup.ui.MWController;
-import com.github.tobiasbriones.sdbackup.ui.MainWindow;
+import dev.tobiasbriones.sdbackup.ui.MWController;
+import dev.tobiasbriones.sdbackup.ui.MainWindow;
 
 import javax.swing.*;
 

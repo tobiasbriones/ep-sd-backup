@@ -10,9 +10,9 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package com.github.tobiasbriones.sdbackup.ui;
+package dev.tobiasbriones.sdbackup.ui;
 
-import com.github.tobiasbriones.sdbackup.model.BackupTask;
+import dev.tobiasbriones.sdbackup.model.BackupTask;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

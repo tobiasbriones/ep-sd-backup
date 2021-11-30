@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Tobias Briones. All rights reserved.
+ * Copyright (c) 2018 Tobias Briones. All rights reserved.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -10,7 +10,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package com.github.tobiasbriones.sdbackup;
+package dev.tobiasbriones.sdbackup;
 
 import java.io.File;
 import java.io.IOException;

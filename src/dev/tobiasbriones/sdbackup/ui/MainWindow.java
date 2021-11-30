@@ -307,7 +307,7 @@ public final class MainWindow extends JFrame implements ActionListener {
                 dl = dl.substring(2);
             }
             destinationsLabel.setText(dl);
-            if (task.isSDBackup()) {
+            if (task.isSdBackup()) {
                 sdOwnerLabel.setText(task.getSdOwner());
                 sdTypeLabel.setText(task.getSdType());
                 sdPanel.setVisible(true);

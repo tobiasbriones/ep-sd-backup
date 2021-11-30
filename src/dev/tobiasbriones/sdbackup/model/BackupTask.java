@@ -81,7 +81,7 @@ public final class BackupTask implements Serializable, Iterable<File> {
      *
      * @return the SD Backup path or null
      */
-    public boolean isSDBackup() {
+    public boolean isSdBackup() {
         return sdPath != null;
     }
 

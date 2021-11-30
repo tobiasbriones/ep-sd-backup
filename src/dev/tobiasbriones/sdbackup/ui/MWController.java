@@ -75,7 +75,7 @@ public final class MWController implements MainWindow.Controller {
         final File originFolder = backupTask.getTarget();
         final SimpleDateFormat sdf = new SimpleDateFormat("YYYY.MM.dd HH_mm");
         final String date = sdf.format(new Date()).replace(':', '_').replace('/', '.');
-        final String sdPath = backupTask.isSDBackup() ? backupTask.getSdPath() : "";
+        final String sdPath = backupTask.isSdBackup() ? backupTask.getSdPath() : "";
 
         if (!(originFolder.exists() && originFolder.isDirectory())) {
             throw new IOException("Target doesn't exist or is not a directory");

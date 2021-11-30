@@ -75,6 +75,12 @@ public final class BackupTask implements Serializable, Iterable<File> {
         return sdType;
     }
 
+    /**
+     * Returns the SD Backup path or null. If a parent directory called
+     * "Software Development" exists then this value is present.
+     *
+     * @return the SD Backup path or null
+     */
     public boolean isSDBackup() {
         return sdPath != null;
     }

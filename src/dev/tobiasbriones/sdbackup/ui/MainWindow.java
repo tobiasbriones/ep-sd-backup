@@ -433,16 +433,14 @@ public final class MainWindow extends JFrame implements ActionListener {
                 if (e.getSource() == saveButton) {
                     final String name = nameTF.getText();
                     final File target = new File(targetTF.getText());
-                    final String[] destinations = destinationsTF.getText()
-                                                                .split(";");
+                    final String[] destinations = destinationsTF.getText().split(";");
 
                     if (targetTF.getText().trim().isEmpty()) {
                         JOptionPane.showMessageDialog(mw, "Empty target!");
                         return;
                     }
                     if (destinationsTF.getText().trim().isEmpty()) {
-                        JOptionPane
-                            .showMessageDialog(mw, "Empty destinations!");
+                        JOptionPane.showMessageDialog(mw, "Empty destinations!");
                         return;
                     }
                     final BackupTask backupTask = new BackupTask();
@@ -469,16 +467,16 @@ public final class MainWindow extends JFrame implements ActionListener {
             formPanel.add(new JLabel("Backup destinations"));
             formPanel.add(destinationsTF);
 
-            actionsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+            actionsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
             actionsPanel.setBackground(Color.WHITE);
-            actionsPanel.add(cancelButton, BorderLayout.WEST);
-            actionsPanel.add(saveButton, BorderLayout.WEST);
+            actionsPanel.add(cancelButton, BorderLayout.LINE_START);
+            actionsPanel.add(saveButton, BorderLayout.LINE_START);
 
             panel.setLayout(new BorderLayout());
             panel.setBorder(new EmptyBorder(10, 10, 10, 10));
             panel.setBackground(Color.WHITE);
             panel.add(formPanel, BorderLayout.CENTER);
-            panel.add(actionsPanel, BorderLayout.SOUTH);
+            panel.add(actionsPanel, BorderLayout.PAGE_END);
             getContentPane().add(panel);
 
             pack();
@@ -519,8 +517,7 @@ public final class MainWindow extends JFrame implements ActionListener {
                         return;
                     }
                     if (destinationsTF.getText().trim().isEmpty()) {
-                        JOptionPane
-                            .showMessageDialog(mw, "Empty destinations!");
+                        JOptionPane.showMessageDialog(mw, "Empty destinations!");
                         return;
                     }
 

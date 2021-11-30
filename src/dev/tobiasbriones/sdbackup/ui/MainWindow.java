@@ -23,8 +23,12 @@ import java.io.IOException;
 import java.util.List;
 
 public final class MainWindow extends JFrame implements ActionListener {
+    private static final String APP_TITLE = "SD Backup";
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 500;
+    private static final String ABOUT_DIALOG_STR;
 
-    public interface Controller {
+    interface Controller {
         List<BackupTask> readBackupTasks();
 
         void newBackupTask(BackupTask backupTask) throws IOException;
@@ -40,120 +44,21 @@ public final class MainWindow extends JFrame implements ActionListener {
     private final DefaultListModel<BackupTask> listModel;
     private final JList<BackupTask> list;
 
+    static {
+        ABOUT_DIALOG_STR = "<html><body><strong>SD Backup v0.1.0</strong><br>" +
+                           "<br><strong>© Tobias Briones - SD Backup " +
+                           "[2018-2021]</strong><br>" +
+                           "GitHub: https://github.com/tobiasbriones/sd-backup" +
+                           "<br></body></html>";
+    }
+
     public MainWindow(Controller controller) {
-        super("SD Backup");
+        super(APP_TITLE);
         this.controller = controller;
         this.listModel = new DefaultListModel<>();
         this.list = new JList<>(listModel);
-        final List<BackupTask> tasks = controller.readBackupTasks();
-        final JPanel panel = new JPanel();
-        final JPanel aboutPanel = new JPanel();
-        final JPanel bottomPanel = new JPanel();
-        final JButton backupButton = new JButton("NOW");
-        final JButton newTaskButton = new JButton("NEW TASK");
-        final JScrollPane scroll = new JScrollPane(list);
-        final JLabel aboutLabel = new JLabel();
-        final MouseListener ml = new MouseAdapter() {
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    final BackupTask edit = list.getSelectedValue();
-
-                    new TaskEditDialog(MainWindow.this, edit, (oldName, update) -> {
-                        controller.updateTask(oldName, update);
-                        list.updateUI();
-                    });
-                }
-                else if (SwingUtilities.isRightMouseButton(e)) {
-                    final JPopupMenu popup = new JPopupMenu();
-                    final JMenuItem deleteItem = new JMenuItem("Delete");
-
-                    popup.add(deleteItem);
-                    list.setSelectedIndex(list.locationToIndex(e.getPoint()));
-                    popup.show(list, e.getX(), e.getY());
-                    final BackupTask delete = list.getSelectedValue();
-
-                    if (delete == null) {
-                        return;
-                    }
-                    deleteItem.addActionListener(e1 -> {
-                        try {
-                            controller.deleteTask(delete);
-                            listModel.removeElement(delete);
-                        }
-                        catch (IOException ex) {
-                            final MainWindow mw = MainWindow.this;
-
-                            JOptionPane.showMessageDialog(mw, ex.getMessage(), "Fail", JOptionPane.ERROR_MESSAGE);
-                        }
-                    });
-                }
-            }
-        };
-        list.setCellRenderer(new TaskListCellRendered());
-        list.addMouseListener(ml);
-        tasks.forEach(listModel::addElement);
-        backupButton.setName("backup");
-        backupButton.addActionListener(this);
-        newTaskButton.setName("new");
-        newTaskButton.addActionListener(this);
-        aboutLabel.setText("ABOUT");
-        aboutLabel.setFont(aboutLabel.getFont().deriveFont(Font.BOLD, 10.0F));
-        aboutLabel.setForeground(Color.decode("#404040"));
-        aboutLabel.setBorder(new EmptyBorder(10, 0, 0, 0));
-        aboutLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        aboutLabel.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                final JDialog about = new JDialog(MainWindow.this);
-                final JPanel panel = new JPanel();
-                final JButton acceptButton = new JButton("ACCEPT");
-                final String text = "<html><body><strong>SD Backup 1.0.0</strong><br><br>" +
-                                    "- This software contains Apache Commons IO library<br><br>" +
-                                    "<strong>©Tobias Briones - SD Backup [2018]</strong><br>" +
-                                    "Contact: tobiasbrionesdev@gmail.com</body></html>";
-
-                acceptButton.addActionListener((e1) -> about.dispose());
-
-                panel.setLayout(new BorderLayout());
-                panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-                panel.setBackground(Color.WHITE);
-                panel.add(new JLabel(text), BorderLayout.CENTER);
-                panel.add(acceptButton, BorderLayout.SOUTH);
-
-                about.add(panel);
-                about.pack();
-                about.setLocationRelativeTo(null);
-                about.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-                about.setVisible(true);
-            }
-        });
-        aboutPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        aboutPanel.setBackground(Color.decode("#FFE082"));
-        aboutPanel.add(aboutLabel);
-
-        bottomPanel.setLayout(new BorderLayout());
-        bottomPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
-        bottomPanel.setBackground(Color.decode("#FFE082"));
-        bottomPanel.add(backupButton, BorderLayout.WEST);
-        bottomPanel.add(newTaskButton, BorderLayout.EAST);
-        bottomPanel.add(aboutPanel, BorderLayout.PAGE_END);
-
-        panel.setLayout(new BorderLayout());
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        panel.setBackground(Color.decode("#FFE082"));
-        panel.add(scroll, BorderLayout.CENTER);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
-        getContentPane().add(panel);
-
-        setPreferredSize(new Dimension(800, 500));
-        setIconImage(getToolkit().getImage("ic_app.png"));
-        pack();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        init();
     }
 
     @Override
@@ -176,6 +81,121 @@ public final class MainWindow extends JFrame implements ActionListener {
         }
     }
 
+    private void init() {
+        final List<BackupTask> tasks = controller.readBackupTasks();
+        final JPanel panel = new JPanel();
+        final JPanel aboutPanel = new JPanel();
+        final JPanel bottomPanel = new JPanel();
+        final JButton backupButton = new JButton("NOW");
+        final JButton newTaskButton = new JButton("NEW TASK");
+        final JScrollPane scroll = new JScrollPane(list);
+        final JLabel aboutLabel = new JLabel();
+        final MouseListener ml = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    final BackupTask edit = list.getSelectedValue();
+
+                    new TaskEditDialog(
+                        MainWindow.this,
+                        edit,
+                        (oldName, update) -> {
+                            controller.updateTask(oldName, update);
+                            list.updateUI();
+                        }
+                    );
+                }
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    final JPopupMenu popup = new JPopupMenu();
+                    final JMenuItem deleteItem = new JMenuItem("Delete");
+
+                    popup.add(deleteItem);
+                    list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+                    popup.show(list, e.getX(), e.getY());
+                    final BackupTask delete = list.getSelectedValue();
+
+                    if (delete == null) {
+                        return;
+                    }
+                    deleteItem.addActionListener(e1 -> {
+                        try {
+                            controller.deleteTask(delete);
+                            listModel.removeElement(delete);
+                        }
+                        catch (IOException ex) {
+                            final MainWindow mw = MainWindow.this;
+
+                            JOptionPane.showMessageDialog(
+                                mw,
+                                ex.getMessage(),
+                                "Fail",
+                                JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                    });
+                }
+            }
+        };
+        list.setCellRenderer(new TaskListCellRendered());
+        list.addMouseListener(ml);
+        tasks.forEach(listModel::addElement);
+        backupButton.setName("backup");
+        backupButton.addActionListener(this);
+        newTaskButton.setName("new");
+        newTaskButton.addActionListener(this);
+        aboutLabel.setText("ABOUT");
+        aboutLabel.setFont(aboutLabel.getFont().deriveFont(Font.BOLD, 10.0F));
+        aboutLabel.setForeground(Color.decode("#404040"));
+        aboutLabel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        aboutLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        aboutLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                final JDialog about = new JDialog(MainWindow.this);
+                final JPanel panel = new JPanel();
+                final JButton acceptButton = new JButton("ACCEPT");
+
+                acceptButton.addActionListener((e1) -> about.dispose());
+
+                panel.setLayout(new BorderLayout());
+                panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+                panel.setBackground(Color.WHITE);
+                panel.add(new JLabel(ABOUT_DIALOG_STR), BorderLayout.CENTER);
+                panel.add(acceptButton, BorderLayout.PAGE_END);
+
+                about.add(panel);
+                about.pack();
+                about.setLocationRelativeTo(null);
+                about.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+                about.setVisible(true);
+            }
+        });
+        aboutPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+        aboutPanel.setBackground(Color.decode("#FFE082"));
+        aboutPanel.add(aboutLabel);
+
+        bottomPanel.setLayout(new BorderLayout());
+        bottomPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
+        bottomPanel.setBackground(Color.decode("#FFE082"));
+        bottomPanel.add(backupButton, BorderLayout.LINE_START);
+        bottomPanel.add(newTaskButton, BorderLayout.LINE_END);
+        bottomPanel.add(aboutPanel, BorderLayout.PAGE_END);
+
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.setBackground(Color.decode("#FFE082"));
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.add(bottomPanel, BorderLayout.PAGE_END);
+        getContentPane().add(panel);
+
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setIconImage(getToolkit().getImage("ic_app.png"));
+        pack();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
     private void runBackup() {
         final class LD extends JDialog {
             private LD() {
@@ -184,7 +204,6 @@ public final class MainWindow extends JFrame implements ActionListener {
                 final MainWindow mw = MainWindow.this;
                 final JPanel panel = new JPanel();
                 final SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
                     Exception e = null;
 
                     @Override
@@ -204,10 +223,20 @@ public final class MainWindow extends JFrame implements ActionListener {
                         if (e == null) {
                             final String msg = "Backup completed.";
 
-                            JOptionPane.showMessageDialog(mw, msg, "Success", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(
+                                mw,
+                                msg,
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE
+                            );
                         }
                         else {
-                            JOptionPane.showMessageDialog(mw, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(
+                                mw,
+                                e.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                            );
                         }
                     }
                 };
@@ -244,7 +273,12 @@ public final class MainWindow extends JFrame implements ActionListener {
             final JPanel contentPanel = new JPanel();
             final JPanel infoPanel = new JPanel();
             final JPanel valuePanel = new JPanel();
-            this.panels = new JPanel[] { panel, contentPanel, infoPanel, valuePanel };
+            this.panels = new JPanel[] {
+                panel,
+                contentPanel,
+                infoPanel,
+                valuePanel
+            };
             this.sdPanel = new JPanel();
             this.nameLabel = new JLabel();
             this.targetLabel = new JLabel();
@@ -253,11 +287,13 @@ public final class MainWindow extends JFrame implements ActionListener {
             this.sdTypeLabel = new JLabel();
 
             sdOwnerLabel.setForeground(Color.decode("#303F9F"));
-            sdOwnerLabel.setFont(sdOwnerLabel.getFont().deriveFont(Font.ITALIC));
+            sdOwnerLabel
+                .setFont(sdOwnerLabel.getFont().deriveFont(Font.ITALIC));
             sdTypeLabel.setForeground(Color.decode("#7B1FA2"));
             sdPanel.setLayout(new GridLayout(2, 2, 0, 10));
             sdPanel.setBackground(Color.WHITE);
-            sdPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.decode("#D0D0D0")));
+            sdPanel.setBorder(BorderFactory
+                .createMatteBorder(1, 0, 0, 0, Color.decode("#D0D0D0")));
             sdPanel.add(new JLabel("Owner"));
             sdPanel.add(sdOwnerLabel);
             sdPanel.add(new JLabel(("Type")));
@@ -284,12 +320,19 @@ public final class MainWindow extends JFrame implements ActionListener {
             contentPanel.add(sdPanel, BorderLayout.LINE_END);
 
             panel.setLayout(new BorderLayout());
-            panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.decode("#737373")));
+            panel.setBorder(BorderFactory
+                .createMatteBorder(0, 0, 1, 0, Color.decode("#737373")));
             panel.add(contentPanel);
         }
 
         @Override
-        public Component getListCellRendererComponent(JList<?> l, Object v, int i, boolean is, boolean chf) {
+        public Component getListCellRendererComponent(
+            JList<?> l,
+            Object v,
+            int i,
+            boolean is,
+            boolean chf
+        ) {
             final BackupTask task = (BackupTask) v;
             final StringBuilder builder = new StringBuilder();
 
@@ -350,14 +393,16 @@ public final class MainWindow extends JFrame implements ActionListener {
                 if (e.getSource() == saveButton) {
                     final String name = nameTF.getText();
                     final File target = new File(targetTF.getText());
-                    final String[] destinations = destinationsTF.getText().split(";");
+                    final String[] destinations = destinationsTF.getText()
+                                                                .split(";");
 
                     if (targetTF.getText().trim().isEmpty()) {
                         JOptionPane.showMessageDialog(mw, "Empty target!");
                         return;
                     }
                     if (destinationsTF.getText().trim().isEmpty()) {
-                        JOptionPane.showMessageDialog(mw, "Empty destinations!");
+                        JOptionPane
+                            .showMessageDialog(mw, "Empty destinations!");
                         return;
                     }
                     final BackupTask backupTask = new BackupTask();
@@ -407,7 +452,11 @@ public final class MainWindow extends JFrame implements ActionListener {
             void update(String oldName, BackupTask update) throws IOException;
         }
 
-        private TaskEditDialog(MainWindow mw, BackupTask edit, Callback callback) {
+        private TaskEditDialog(
+            MainWindow mw,
+            BackupTask edit,
+            Callback callback
+        ) {
             super(mw, "Edit - " + edit.getName());
             final String oldName = edit.getName();
             final JPanel panel = new JPanel();
@@ -422,14 +471,16 @@ public final class MainWindow extends JFrame implements ActionListener {
                 if (e.getSource() == saveButton) {
                     final String name = nameTF.getText();
                     final File target = new File(targetTF.getText());
-                    final String[] destinations = destinationsTF.getText().split(";");
+                    final String[] destinations = destinationsTF.getText()
+                                                                .split(";");
 
                     if (targetTF.getText().trim().isEmpty()) {
                         JOptionPane.showMessageDialog(mw, "Empty target!");
                         return;
                     }
                     if (destinationsTF.getText().trim().isEmpty()) {
-                        JOptionPane.showMessageDialog(mw, "Empty destinations!");
+                        JOptionPane
+                            .showMessageDialog(mw, "Empty destinations!");
                         return;
                     }
 
@@ -443,7 +494,12 @@ public final class MainWindow extends JFrame implements ActionListener {
                         callback.update(oldName, edit);
                     }
                     catch (IOException ex) {
-                        JOptionPane.showMessageDialog(mw, ex.getMessage(), "Fail", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                            mw,
+                            ex.getMessage(),
+                            "Fail",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 }
                 dispose();
@@ -451,9 +507,12 @@ public final class MainWindow extends JFrame implements ActionListener {
 
             nameTF.setText(edit.getName());
             targetTF.setText(edit.getTarget().toString());
-            edit.forEach(file -> destinationsTF.setText(destinationsTF.getText() + ";" + file));
+            edit.forEach(file -> destinationsTF
+                .setText(destinationsTF.getText() + ";" + file));
 
-            if (destinationsTF.getText().length() > 0 && destinationsTF.getText().charAt(0) == ';') {
+            if (destinationsTF.getText().length() > 0 && destinationsTF
+                                                             .getText()
+                                                             .charAt(0) == ';') {
                 destinationsTF.setText(destinationsTF.getText().substring(1));
             }
             cancelButton.addActionListener(l);
@@ -468,16 +527,16 @@ public final class MainWindow extends JFrame implements ActionListener {
             editPanel.add(new JLabel("Backup destinations"));
             editPanel.add(destinationsTF);
 
-            actionsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+            actionsPanel.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
             actionsPanel.setBackground(Color.WHITE);
-            actionsPanel.add(cancelButton, BorderLayout.WEST);
-            actionsPanel.add(saveButton, BorderLayout.WEST);
+            actionsPanel.add(cancelButton, BorderLayout.LINE_START);
+            actionsPanel.add(saveButton, BorderLayout.LINE_START);
 
             panel.setLayout(new BorderLayout());
             panel.setBorder(new EmptyBorder(10, 10, 10, 10));
             panel.setBackground(Color.WHITE);
             panel.add(editPanel, BorderLayout.CENTER);
-            panel.add(actionsPanel, BorderLayout.SOUTH);
+            panel.add(actionsPanel, BorderLayout.PAGE_END);
             getContentPane().add(panel);
 
             pack();

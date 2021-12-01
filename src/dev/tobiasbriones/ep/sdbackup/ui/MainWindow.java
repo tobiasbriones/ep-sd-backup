@@ -48,7 +48,7 @@ public final class MainWindow extends JFrame implements ActionListener {
         ABOUT_DIALOG_STR = "<html><body><strong>SD Backup v0.1.0</strong><br>" +
                            "<br><strong>© Tobias Briones - SD Backup " +
                            "[2018-2021]</strong><br>" +
-                           "GitHub: https://github.com/tobiasbriones/sd-backup" +
+                           "GitHub: https://github.com/tobiasbriones/ep-sd-backup" +
                            "<br></body></html>";
     }
 

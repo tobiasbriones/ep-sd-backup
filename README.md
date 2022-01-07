@@ -1,10 +1,10 @@
 # Example Project: SD Backup
 
-[![EP](./docs/badge.svg)](https://tobiasbriones.github.io/example-project/ep/sd-backup)
+[![Project](./docs/badge.svg)](https://tobiasbriones.github.io/example-project/ep/sd-backup)
 &nbsp;
-[![GitHub Repository](https://raw.githubusercontent.com/tobiasbriones/general-images/main/example-projects/badges/ep-gh-repo-badge.svg)](https://github.com/tobiasbriones/ep-sd-backup)
+[![GitHub Repository](https://img.shields.io/static/v1?label=GITHUB&message=REPOSITORY&labelColor=555&color=0277bd&style=for-the-badge&logo=GITHUB)](https://github.com/tobiasbriones/ep-sd-backup)
 
-[![Project GitHub License](https://img.shields.io/github/license/tobiasbriones/ep-sd-backup.svg?style=flat-square)](https://github.com/tobiasbriones/ep-sd-backup/blob/main/LICENSE)
+[![GitHub Project License](https://img.shields.io/github/license/tobiasbriones/ep-sd-backup.svg?style=flat-square)](https://github.com/tobiasbriones/ep-sd-backup/blob/main/LICENSE)
 
 Basic desktop app that might help to make occasional backups.
 
